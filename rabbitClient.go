@@ -27,7 +27,12 @@ func getMetrics(config rabbitExporterConfig, endpoint string) *json.Decoder {
 
 func getQueueMap(config rabbitExporterConfig) map[string]MetricMap {
 	metric := getMetrics(config, "queues")
-	qm := MakeQueueMap(metric)
+	var qm map[string]MetricMap
+	if config.RabbitHost != "" {
+		qm = MakeQueueMap(metric, config.RabbitHost)
+	} else {
+		qm = MakeQueueMap(metric, "")
+	}
 	return qm
 }
 

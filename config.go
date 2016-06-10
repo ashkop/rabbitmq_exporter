@@ -22,6 +22,7 @@ type rabbitExporterConfig struct {
 	RabbitURL      string
 	RabbitUsername string
 	RabbitPassword string
+	RabbitHost     string
 	PublishPort    string
 	OutputFormat   string
 }
@@ -41,6 +42,10 @@ func initConfig() {
 
 	if pass := os.Getenv("RABBIT_PASSWORD"); pass != "" {
 		config.RabbitPassword = pass
+	}
+
+	if pass := os.Getenv("RABBIT_HOST"); pass != "" {
+		config.RabbitHost = pass
 	}
 
 	if port := os.Getenv("PUBLISH_PORT"); port != "" {

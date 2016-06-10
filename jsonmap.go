@@ -10,7 +10,7 @@ import (
 type MetricMap map[string]float64
 
 //MakeQueueMap creates a map of queues from json input. Only keys with float values are mapped.
-func MakeQueueMap(d *json.Decoder) map[string]MetricMap {
+func MakeQueueMap(d *json.Decoder, host string) map[string]MetricMap {
 	queueMap := make(map[string]MetricMap)
 	var jsonArr []map[string]interface{}
 
@@ -26,9 +26,11 @@ func MakeQueueMap(d *json.Decoder) map[string]MetricMap {
 	for _, el := range jsonArr {
 		log.WithField("element", el).WithField("name", el["name"]).Debug("Iterate over array")
 		if name, ok := el["name"]; ok {
-			flMap := make(MetricMap)
-			addFields(&flMap, "", el)
-			queueMap[name.(string)] = flMap
+			if virtual_host, ok := el["vhost"]; host == "" || ok && (virtual_host == host) {
+				flMap := make(MetricMap)
+				addFields(&flMap, "", el)
+				queueMap[name.(string)] = flMap
+			}
 		}
 	}
 
